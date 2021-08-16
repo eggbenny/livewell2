@@ -1,0 +1,45 @@
+/* Custom CSS */
+/* Benedito Chou */
+/* July 27 2021 */
+
+
+/* Custom Colour for Card */
+.bg-blue {
+  background-color: #4a68de !important;
+}
+
+.bg-navy {
+  background-color: #5a72f0 !important;
+}
+
+.bg-teal {
+  background-color: #6776d4 !important;
+}
+
+.bg-olive {
+  background-color: #788eff !important;
+}
+
+.bg-fuchsia {
+  background-color: #6174e2 !important;
+}
+
+.bg-purple {
+  background-color: #826fcf !important;
+}
+
+/* Custom Header Colour */
+ /* logo */
+        .skin-blue .main-header .logo {
+                              background-color: #4a68de;
+                              }
+
+        /* logo when hovered */
+        .skin-blue .main-header .logo:hover {
+                              background-color: #4a68de;
+                              }
+
+        /* navbar (rest of the header) */
+        .skin-blue .main-header .navbar {
+                              background-color: #4a68de;
+                              }
