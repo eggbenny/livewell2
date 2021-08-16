@@ -1,6 +1,6 @@
 # server.R
 # Benedito Chou
-# July 13 2021
+# Aug 15 2021
 
 # --- Server ----------------------------------------------
 
@@ -67,6 +67,19 @@ shinyServer(function(input, output, session) {
    
    observeEvent(input$hide_work_matrix, {
      shinyjs::toggle(id = "work_matrix_box")
+   })
+   
+   # Hide Sankey
+   observeEvent(input$hide_play_sankey, {
+     shinyjs::toggle(id = "play_sankey_box")
+   })
+   
+   observeEvent(input$hide_rest_sankey, {
+     shinyjs::toggle(id = "rest_sankey_box")
+   })
+   
+   observeEvent(input$hide_work_sankey, {
+     shinyjs::toggle(id = "work_sankey_box")
    })
    
    # Hide Scatterplot
@@ -379,7 +392,9 @@ shinyServer(function(input, output, session) {
                  dplyr::select(b) %>% unlist() %>% as.numeric()
           bm <- filter(slider_med_data, var_name == input$iv) %>% 
                  dplyr::select(b) %>% unlist() %>% as.numeric()
-          real_b <- b1 * bm
+          # Get sign so it doesn't mess up the multiplier
+          sign <- sign(bm)
+          real_b <- b1 * bm * sign
           
           print(paste0("Mod Route(", input$iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b1, 3)))
           
@@ -389,7 +404,9 @@ shinyServer(function(input, output, session) {
                  dplyr::select(b) %>% unlist() %>% as.numeric()
           bm <- filter(slider_med_data, var_name == input$iv) %>% 
                  dplyr::select(b) %>% unlist() %>% as.numeric()
-          real_b <- b2 * bm
+          # Get sign so it doesn't mess up the multiplier
+          sign <- sign(bm)
+          real_b <- b2 * bm * sign
           
           print(paste0("Mod Route(", input$iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b2, 3)))
           
@@ -399,7 +416,9 @@ shinyServer(function(input, output, session) {
                  dplyr::select(b) %>% unlist() %>% as.numeric()
           bm <- filter(slider_med_data, var_name == input$iv) %>% 
                  dplyr::select(b) %>% unlist() %>% as.numeric()
-          real_b <- b3 * bm
+          # Get sign so it doesn't mess up the multiplier
+          sign <- sign(bm)
+          real_b <- b3 * bm * sign
           print(paste0("Mod Route(", input$iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b3, 3)))
         
         } else {
@@ -459,7 +478,9 @@ shinyServer(function(input, output, session) {
                  dplyr::select(b) %>% unlist() %>% as.numeric()
           bm <- filter(slider_med_data, var_name == input$rest_iv) %>% 
                  dplyr::select(b) %>% unlist() %>% as.numeric()
-          real_b <- b1 * bm
+          # Get sign so it doesn't mess up the multiplier
+          sign <- sign(bm)
+          real_b <- b1 * bm * sign
           print(paste0("Mod Route(", input$rest_iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b1, 3)))
         
 
@@ -469,7 +490,9 @@ shinyServer(function(input, output, session) {
                  dplyr::select(b) %>% unlist() %>% as.numeric()
           bm <- filter(slider_med_data, var_name == input$rest_iv) %>%
                  dplyr::select(b) %>% unlist() %>% as.numeric()
-          real_b <- b2 * bm
+          # Get sign so it doesn't mess up the multiplier
+          sign <- sign(bm)
+          real_b <- b2 * bm * sign
 
           print(paste0("Mod Route(", input$rest_iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b2, 3)))
         } else if (input$rest_iv_top5 == "per_adults_with_obesity" & input$rest_iv != "Select a Measure") {
@@ -478,7 +501,9 @@ shinyServer(function(input, output, session) {
             dplyr::select(b) %>% unlist() %>% as.numeric()
           bm <- filter(slider_med_data, var_name == input$rest_iv) %>%
             dplyr::select(b) %>% unlist() %>% as.numeric()
-          real_b <- b3 * bm
+          # Get sign so it doesn't mess up the multiplier
+          sign <- sign(bm)
+          real_b <- b3 * bm * sign
           
           print(paste0("Mod Route(", input$rest_iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b3, 3)))
           
@@ -518,7 +543,9 @@ shinyServer(function(input, output, session) {
           dplyr::select(b) %>% unlist() %>% as.numeric()
         bm <- filter(slider_med_data, var_name == input$work_iv) %>% 
           dplyr::select(b) %>% unlist() %>% as.numeric()
-        real_b <- b1 * bm
+        # Get sign so it doesn't mess up the multiplier
+        sign <- sign(bm)
+        real_b <- b1 * bm * sign
         
         print(paste0("Mod Route(", input$work_iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b1, 3)))
         
@@ -528,7 +555,9 @@ shinyServer(function(input, output, session) {
           dplyr::select(b) %>% unlist() %>% as.numeric()
         bm <- filter(slider_med_data, var_name == input$work_iv) %>% 
           dplyr::select(b) %>% unlist() %>% as.numeric()
-        real_b <- b2 * bm
+        # Get sign so it doesn't mess up the multiplier
+        sign <- sign(bm)
+        real_b <- b2 * bm * sign
         
         print(paste0("Mod Route(", input$work_iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b2, 3)))
         
@@ -538,7 +567,9 @@ shinyServer(function(input, output, session) {
           dplyr::select(b) %>% unlist() %>% as.numeric()
         bm <- filter(slider_med_data, var_name == input$work_iv) %>% 
           dplyr::select(b) %>% unlist() %>% as.numeric()
-        real_b <- b3 * bm
+        # Get sign so it doesn't mess up the multiplier
+        sign <- sign(bm)
+        real_b <- b3 * bm * sign
         print(paste0("Mod Route(", input$work_iv, "): ", round(real_b, 3), " = ", round(bm, 3), " * ", round(b3, 3)))
         
       } else {
@@ -1902,7 +1933,7 @@ shinyServer(function(input, output, session) {
         
         infoBox(
           HTML(paste("% of Population",br(), "Physically Inactive")),
-          value, 
+          paste0(value, " (", round(real_b * xchange, 1), ")"), 
           fill = TRUE,
           color = "navy"
         )
@@ -1992,7 +2023,7 @@ shinyServer(function(input, output, session) {
         
         infoBox(
           HTML(paste("% of Population", br(), "with Insufficient Sleep")),
-          value, 
+          paste0(value, " (", round(real_b * xchange, 1), ")"), 
           fill = TRUE,
           color = "navy"
         )
@@ -2081,8 +2112,8 @@ shinyServer(function(input, output, session) {
       value <- round(data$per_w_a_disability, 1)
       
       infoBox(
-        HTML(paste("% of Population", br(), "with Disability")),
-        value, 
+        HTML(paste("% of Population", br(), "with a cognitive or", br(), "physical impairment")),
+        paste0(value, " (", round(real_b * xchange, 1), ")"), 
         fill = TRUE,
         color = "navy"
       )
@@ -2277,6 +2308,7 @@ shinyServer(function(input, output, session) {
             dplyr::select(score) %>%
             unlist() %>%
             as.numeric()
+      
         
         if (input$region != "--") {
           value <- value_region
@@ -2284,10 +2316,20 @@ shinyServer(function(input, output, session) {
           value <- value_county
         }
         
+        # Add original to calculate change
+        value_fixed <- play_fixed_z_data_wgeo %>%
+          filter(state == input$state, county == input$county) %>%
+          pull(score)
+        
+        change <- round(value - value_fixed, 1)
+        
+        value_fixed <- round(value_fixed, 1)
+        
         value <- round(value, 1)
         
         infoBox(
-          "Play Index", value, 
+          "Play Index", 
+          paste0(value, " (", change, ")"), 
           fill = TRUE,
           color = "blue"
         )
@@ -2314,10 +2356,20 @@ shinyServer(function(input, output, session) {
           value <- value_county
         }
         
+        # Add original to calculate change
+        value_fixed <- rest_fixed_z_data_wgeo %>%
+          filter(state == input$state, county == input$county) %>%
+          pull(score)
+        
+        change <- round(value - value_fixed, 1)
+        
+        value_fixed <- round(value_fixed, 1)
+        
         value <- round(value, 1)
         
         infoBox(
-          "Rest Index", value, 
+          "Rest Index", 
+          paste0(value, " (", change, ")"), 
           fill = TRUE,
           color = "blue"
         )
@@ -2344,10 +2396,20 @@ shinyServer(function(input, output, session) {
           value <- value_county
         }
         
+        # Add original to calculate change
+        value_fixed <- work_fixed_z_data_wgeo %>%
+          filter(state == input$state, county == input$county) %>%
+          pull(score)
+        
+        change <- round(value - value_fixed, 1)
+        
+        value_fixed <- round(value_fixed, 1)
+        
         value <- round(value, 1)
         
         infoBox(
-          "Work Index", value, 
+          "Work Index", 
+          paste0(value, " (", change, ")"),
           fill = TRUE,
           color = "blue"
         )
@@ -2674,6 +2736,81 @@ shinyServer(function(input, output, session) {
     })
     
     
+    # Per with Disability change for card
+    per_w_disability_change <- reactive({
+      
+      # Physical Inactivity
+      # Get data
+      data <- work_plot_data()
+      
+      data <- left_join(data, region_lkup, by = c("fips" = "FIPS"))
+      
+      if (input$work_region != "--") {
+        data <- data %>% mutate(
+          focusOrg = focus,
+          focus = ifelse(Region == input$work_region, 1, focus),
+          focus = ifelse(is.na(focus), focusOrg, focus))
+      }
+      
+      # Get weight aka slider data
+      slider_data <- work_slider_data()
+      slider_med_data <- work_slider_med_data()
+      
+      if (nrow(slider_data) == 0) {
+        slider_data <- data.frame(b = 0)
+      }
+      
+      # Make focus generic
+      #  if (input$iv_top5 != "Select a Measure"  & input$rest_iv == "Select a Measure") {
+      #  data <- data %>%
+      #      rename(
+      #        "top5_iv" = input$iv_top5)  %>%
+      #    mutate(top5_iv =  ifelse(focus == 1, top5_iv + input$change_top5, top5_iv))
+      #  }
+      #  
+      # if (input$iv_top5 %in% measure_top3_lst_play & input$iv != "Select a Measure") {
+      #  data <- data %>%
+      #      rename(
+      #        "focus_iv" = input$iv_top5) %>%
+      #    mutate(focus_iv = ifelse(focus == 1, focus_iv + input$change, focus_iv))
+      #  }
+      
+      # 
+      # if (input$iv != "Select a Measure") {
+      #   
+      # data <- data %>%
+      #     rename(
+      #       "focus_iv" = input$iv) %>%
+      #   mutate(focus_iv = ifelse(focus == 1, focus_iv + input$change, focus_iv))
+      # }
+      
+      # Change x axis
+      if(input$work_iv_top5 != "Select a Measure" & input$work_iv == "Select a Measure") {
+        xchange <- input$work_change_top5
+      } else {
+        xchange <- input$work_change
+      }
+      
+      # if (input$iv_top5 == "per_fair_or_poor_health" & input$iv != "Select a Measure") {
+      #   b2 <- filter(slider_data, var_name == "per_fair_or_poor_health") %>% 
+      #          dplyr::select(b) %>% unlist() %>% as.numeric()
+      #   bm <- filter(slider_med_data, var_name == input$iv) %>% 
+      #          dplyr::select(b) %>% unlist() %>% as.numeric()
+      #   real_b <- b2 * bm
+      #   # print(paste0("Mod Route(", input$iv, "): ", real_b, " = ", bm, " * ", b2))
+      # } else {
+      #   real_b <- slider_data$b
+      # }
+      
+      # Get real_b from slider
+      real_b <- work_slider_change_b()
+      
+      change <- real_b * xchange
+      
+      return(change)
+      
+    })
+    
     # Extra data grouping
     extra_data_for_card <- reactive({
         
@@ -2736,9 +2873,9 @@ shinyServer(function(input, output, session) {
         
         infoBox(
           HTML(paste(" Years of Potential", br(), "Life Lost Rate")),
-          final_value,
+          paste0(final_value, " (", round(b * phy_inactive_change, 1), ")"),
           fill = TRUE,
-          color = "olive"
+          color = "fuchsia"
         )
       
     })
@@ -2763,7 +2900,7 @@ shinyServer(function(input, output, session) {
         
         infoBox(
           HTML(paste("Average # of", br(), "Physically Unhealthy Days")),
-          final_value,
+          paste0(final_value, " (", round(b * phy_inactive_change, 2), ")"),
           fill = TRUE,
           color = "olive"
         )
@@ -2790,7 +2927,7 @@ shinyServer(function(input, output, session) {
         
         infoBox(
           HTML(paste("Average # of", br(), "Mentally Unhealthy Days")),
-          final_value,
+          paste0(final_value, " (", round(b * phy_inactive_change, 2), ")"),
           fill = TRUE,
           color = "olive"
         )
@@ -2817,9 +2954,9 @@ shinyServer(function(input, output, session) {
 
         infoBox(
           HTML(paste("Premature Age Adjusted", br(), "Mortality")),
-          final_value,
+          paste0(final_value, " (", round(b * phy_inactive_change, 2), ")"),
           fill = TRUE,
-          color = "olive"
+          color = "fuchsia"
         )
 
     })
@@ -2857,7 +2994,133 @@ shinyServer(function(input, output, session) {
     })
     
     
+    # New cards (4):  
+    # Years of Potential Life Lost Rate, 
+    # Average Number of Physically Unhealthy Days, 
+    # Average Number of Mentally Unhealthy Days, 
+    # Premature age-adjusted mortality
+    
     output$rest_impact_card_1 <- renderInfoBox({
+      
+      # Insufficient Sleep change
+      insufficient_sleep_change <- insufficient_sleep_change()
+      # Get impact model b
+      data <- rest_z_geo_w_criterion_df()
+      
+      # value <- cor(data$score, data$years_of_potential_life_lost_rate, 
+      #     method = "pearson", use = "complete.obs")
+      
+      model <- lm(years_of_potential_life_lost_rate ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      # b.check <<- b
+      # select_data.check <<- data
+      # phy_inactive_change.check <<- phy_inactive_change
+      
+      final_value <- round(data$years_of_potential_life_lost_rate - (b * insufficient_sleep_change), 1)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste(" Years of Potential", br(), "Life Lost Rate")),
+        paste0(final_value, " (", round(b * insufficient_sleep_change, 1), ")"),
+        fill = TRUE,
+        color = "fuchsia"
+      )
+      
+    })
+    
+    output$rest_impact_card_2 <- renderInfoBox({
+      
+      # Insufficient Sleep change
+      insufficient_sleep_change <- insufficient_sleep_change()
+      # Get impact model b
+      data <- rest_z_geo_w_criterion_df()
+      
+      model <- lm(avg_no_of_physically_unhealthy_days ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(data$avg_no_of_physically_unhealthy_days - (b * insufficient_sleep_change), 2)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Average # of", br(), "Physically Unhealthy Days")),
+        paste0(final_value, " (", round(b * insufficient_sleep_change, 2), ")"),
+        fill = TRUE,
+        color = "olive"
+      )
+      
+    })
+    
+    output$rest_impact_card_3 <- renderInfoBox({
+      
+      # Insufficient Sleep change
+      insufficient_sleep_change <- insufficient_sleep_change()
+      # Get impact model b
+      data <- rest_z_geo_w_criterion_df()
+      
+      model <- lm(avg_no_of_mentally_unhealthy_days ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(data$avg_no_of_mentally_unhealthy_days - (b * insufficient_sleep_change), 2)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Average # of", br(), "Mentally Unhealthy Days")),
+        paste0(final_value, " (", round(b * insufficient_sleep_change, 2), ")"),
+        fill = TRUE,
+        color = "olive"
+      )
+      
+    })
+    
+    output$rest_impact_card_4 <- renderInfoBox({
+      
+      # Insufficient Sleep change
+      insufficient_sleep_change <- insufficient_sleep_change()
+      # Get impact model b
+      data <- rest_z_geo_w_criterion_df()
+      
+      # add age_adjusted_death_rate
+      data <- left_join(data, dplyr::select(ana_data_criterion, age_adjusted_death_rate, fips),
+                        by = "fips")
+      
+      model <- lm(age_adjusted_death_rate ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(data$age_adjusted_death_rate - (b * insufficient_sleep_change), 1)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Premature Age Adjusted", br(), "Mortality")),
+        paste0(final_value, " (", round(b * insufficient_sleep_change, 2), ")"),
+        fill = TRUE,
+        color = "fuchsia"
+      )
+      
+    })
+    
+    
+    output$rest_impact_card_5 <- renderInfoBox({
       
       # Insufficient Sleep change
       insufficient_sleep_change <-  insufficient_sleep_change()
@@ -2874,7 +3137,7 @@ shinyServer(function(input, output, session) {
       
       data <- extra_data_for_card()
       
-      final_value <- round(0- (b * insufficient_sleep_change), 1)
+      final_value <- round(0 - (b * insufficient_sleep_change), 1)
       
       # final_value <- round(data$age_adjusted_death_rate - (b * phy_inactive_change), 1)
       
@@ -2890,6 +3153,162 @@ shinyServer(function(input, output, session) {
     })
 
     
+    # New cards (4):  
+    # Years of Potential Life Lost Rate, 
+    # Average Number of Physically Unhealthy Days, 
+    # Average Number of Mentally Unhealthy Days, 
+    # Premature age-adjusted mortality
+    
+    output$work_impact_card_1 <- renderInfoBox({
+      
+      # Per with Disability change
+      per_w_disability_change <-  per_w_disability_change()
+      # Get impact model b
+      data <- work_z_geo_w_criterion_df()
+      
+      # value <- cor(data$score, data$years_of_potential_life_lost_rate, 
+      #     method = "pearson", use = "complete.obs")
+      
+      model <- lm(years_of_potential_life_lost_rate ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      # b.check <<- b
+      # select_data.check <<- data
+      # phy_inactive_change.check <<- phy_inactive_change
+      
+      final_value <- round(data$years_of_potential_life_lost_rate - (b * per_w_disability_change), 1)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste(" Years of Potential", br(), "Life Lost Rate")),
+        paste0(final_value, " (", round(b * per_w_disability_change, 1), ")"),
+        fill = TRUE,
+        color = "fuchsia"
+      )
+      
+    })
+    
+    output$work_impact_card_2 <- renderInfoBox({
+      
+      # Per with Disability change
+      per_w_disability_change <-  per_w_disability_change()
+      # Get impact model b
+      data <- work_z_geo_w_criterion_df()
+      
+      model <- lm(avg_no_of_physically_unhealthy_days ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(data$avg_no_of_physically_unhealthy_days - (b * per_w_disability_change), 2)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Average # of", br(), "Physically Unhealthy Days")),
+        paste0(final_value, " (", round(b * per_w_disability_change, 2), ")"),
+        fill = TRUE,
+        color = "olive"
+      )
+      
+    })
+    
+    output$work_impact_card_3 <- renderInfoBox({
+      
+      # Per with Disability change
+      per_w_disability_change <-  per_w_disability_change()
+      # Get impact model b
+      data <- work_z_geo_w_criterion_df()
+      
+      model <- lm(avg_no_of_mentally_unhealthy_days ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(data$avg_no_of_mentally_unhealthy_days - (b * per_w_disability_change), 2)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Average # of", br(), "Mentally Unhealthy Days")),
+        paste0(final_value, " (", round(b * per_w_disability_change, 2), ")"),
+        fill = TRUE,
+        color = "olive"
+      )
+      
+    })
+    
+    output$work_impact_card_4 <- renderInfoBox({
+      
+      # Per with Disability change
+      per_w_disability_change <-  per_w_disability_change()
+      # Get impact model b
+      data <- work_z_geo_w_criterion_df()
+      
+      # # add age_adjusted_death_rate
+      data <- left_join(data, dplyr::select(ana_data_criterion, age_adjusted_death_rate, fips),
+                        by = "fips")
+      
+      model <- lm(age_adjusted_death_rate ~ score, data = data) %>%
+        tidy()
+      
+      b <- model$estimate[2]
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(data$age_adjusted_death_rate - (b * per_w_disability_change), 1)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Premature Age Adjusted", br(), "Mortality")),
+        paste0(final_value, " (", round(b * per_w_disability_change, 2), ")"),
+        fill = TRUE,
+        color = "fuchsia"
+      )
+      
+    })
+    
+    output$work_impact_card_5 <- renderInfoBox({
+      
+      # per_w_disability change
+      per_w_disability_change <-  per_w_disability_change()
+      # Get impact model b
+      # data <- z_geo_w_criterion_df()
+      # 
+      # model <- lm(age_adjusted_death_rate ~ score, data = data) %>%
+      #   tidy()
+      # 
+      # b <- model$estimate[2]
+      
+      # Hard code for now
+      b <- -46.56329  
+      
+      data <- extra_data_for_card()
+      
+      final_value <- round(0- (b * per_w_disability_change), 1)
+      
+      # final_value <- round(data$age_adjusted_death_rate - (b * phy_inactive_change), 1)
+      
+      # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
+      
+      infoBox(
+        HTML(paste("Est' Change Employer Total", br(), "Spend per Member")),
+        paste0("$", round(final_value, 1)),
+        fill = TRUE,
+        color = "olive"
+      )
+      
+    })
     
     # --- Extra Impact Card ---
     # Optional for some Clients
@@ -3003,7 +3422,10 @@ shinyServer(function(input, output, session) {
         
         final_value <- (data$annual_avg_emplvl + pop_change_value ) * 166
         
-        final_value <- paste0("$", formatC(round(final_value, 1), format="f", big.mark=",", digits=1))
+        final_value <- paste0("$", formatC(round(final_value, 1), format="f", big.mark=",", digits = 1),
+                              
+                              " ($", formatC(round(pop_change_value, 1), format="f", big.mark=",", digits = 0),
+                              ")")
         
         infoBox(
           HTML(paste("Physical Inactivity", br(), " Absenteeism Cost to Employer")),
@@ -3070,7 +3492,8 @@ shinyServer(function(input, output, session) {
         
         final_value <- (data$annual_avg_emplvl - pop_change_value ) * 2280 
         
-        final_value <- paste0("$", formatC(round(final_value, 1), format="f", big.mark=",", digits=1))
+        final_value <- paste0("$", formatC(round(final_value, 1), format="f", big.mark=",", digits = 1),
+                              " ($", formatC(round(pop_change_value, 1), format="f", big.mark=",", digits = 0), ")")
         
         infoBox(
           HTML(paste("Insufficient Sleep", br(), "Cost")),
@@ -4369,7 +4792,7 @@ shinyServer(function(input, output, session) {
                          color = factor(focus)), size = 5, shape = 21) +
           geom_label_repel(aes(label = label),
                            color = "black") +
-          labs(y = "Work Index (0 to 100)", x = "% with a Disability") +
+          labs(y = "Work Index (0 to 100)", x = "% of population with a cognitive or physical impairment") +
           theme_minimal() +
           scale_fill_manual(values = quintile_colour_pal) +
           scale_colour_manual(values = c("#ffffff00", "black")) +
@@ -4386,7 +4809,7 @@ shinyServer(function(input, output, session) {
                            color = "darkgrey", size = 4.5, box.padding = .12, label.padding = .12, label.size = 0.2) +
           geom_label_repel(data = region_data, aes(label = label),
                            color = "black", size = 7) +
-          labs(y = "Work Index (0 to 100)", x = "% with a Disability") +
+          labs(y = "Work Index (0 to 100)", x = "% of population with a cognitive or physical impairment") +
           theme_minimal() +
           scale_fill_manual(values = quintile_colour_pal) +
           scale_colour_manual(values = c("#ffffff00", "black")) +
@@ -4936,6 +5359,8 @@ shinyServer(function(input, output, session) {
             order = rank(score)) 
       }
       
+      use_colour <- sort(as.numeric(as.character(unique(subdata$quintile))))
+      
       # filter by drop down
       if (input$iv_domain != "Key Impact") {
         subdata <- filter(subdata,
@@ -4943,7 +5368,6 @@ shinyServer(function(input, output, session) {
           )
       }
       
-      use_colour <- sort(as.numeric(as.character(unique(subdata$quintile))))
       
       p <- ggplot(subdata, aes(label, factor(1))) +
         geom_tile(aes(colour = `Key Impact`, fill = quintile), size = 2.2) +
@@ -5020,6 +5444,8 @@ shinyServer(function(input, output, session) {
             order = rank(score))
       }
 
+      use_colour <- sort(as.numeric(as.character(unique(subdata$quintile))))
+      
       
       # filter by drop down
       if (input$rest_iv_domain != "Key Impact") {
@@ -5028,9 +5454,6 @@ shinyServer(function(input, output, session) {
         )
       }
       
-      
-      use_colour <- sort(as.numeric(as.character(unique(subdata$quintile))))
-
       
       p <- ggplot(subdata, aes(label, factor(1))) +
         geom_tile(aes(colour = `Key Impact`, fill = quintile), size = 2.2) +
@@ -5106,6 +5529,7 @@ shinyServer(function(input, output, session) {
             order = rank(score))
       }
       
+      use_colour <- sort(as.numeric(as.character(unique(subdata$quintile))))
 
       
       # filter by drop down
@@ -5115,8 +5539,7 @@ shinyServer(function(input, output, session) {
         )
       }
       
-      use_colour <- sort(as.numeric(as.character(unique(subdata$quintile))))
-      
+ 
       p <- ggplot(subdata, aes(label, factor(1))) +
         geom_tile(aes(colour = `Key Impact`, fill = quintile), size = 2.2) +
         geom_text(aes(label = label), size= 4.1, lineheight = .8, fontface = "bold") +
@@ -5141,4 +5564,538 @@ shinyServer(function(input, output, session) {
       
     })
     
+    #### Sankey Charts
+    
+    output$play_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_play, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_play)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+
+      data <- mutate(data, 
+                         Index = "Play",
+                         var = factor(var_name, levels = measure_all_lst_play),
+                         Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("Play Index") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$rest_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_rest, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_rest)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")
+      
+      data <- mutate(data, 
+                     Index = "Rest",
+                     var = factor(var_name, levels = measure_all_lst_rest),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("Rest Index") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$work_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_work, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_work)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")
+      
+      data <- mutate(data, 
+                     Index = "Work",
+                     var = factor(var_name, levels = measure_all_lst_work),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("Work Index") +
+        # scale_fill_brewer() +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    # Second LAyer
+    output$fp_health_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_fp_health, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_fp_health)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_fp_health),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("% Fair or Poor Health") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$grad_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_grad, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_grad)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_grad),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("% with Grad or Prof Degree") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$grad2_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_grad, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_grad)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_grad),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("% with Grad or Prof Degree") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$diabetes_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_diabetes, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_diabetes)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_diabetes),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("% with Diabetes") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$avg_m_days_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_avg_m_days, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_avg_m_days)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_avg_m_days),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("Avg # of Mentally UnHealthy Days") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$avg_m_days2_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_avg_m_days, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_avg_m_days)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_avg_m_days),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("Avg # of Mentally UnHealthy Days") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$obesity_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_obesity, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_obesity)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_obesity),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("% with Obesity") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$phy_inactive_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_phy_inactive, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_phy_inactive)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_phy_inactive),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("% Physical Inactive") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
+    
+    output$teen_brate_sankey <- renderPlot({
+      
+      data <- filter(m_step_df_teen_brate, var_name != "(Intercept)") %>%
+        arrange(desc(pratt)) %>%
+        filter(var_name %in% measure_all_lst_teen_brate)
+      
+      data <- data %>% 
+        left_join(domain_map, by = "var_name")
+      
+      data <- data %>%
+        left_join(domain_color_df, by = "Domain")      
+      
+      data <- mutate(data, 
+                     var = factor(var_name, levels = measure_all_lst_teen_brate),
+                     Freq = pratt*15 + 1) %>%
+        ungroup() %>%
+        arrange(pratt)
+      
+      # Estimate Domain Pratt by summing them
+      data <- data %>%
+        group_by(Domain) %>% 
+        mutate(pratt_domain = sum(pratt, na.rm = T)) %>%
+        ungroup() %>%
+        arrange(desc(pratt_domain))
+      
+      domain_sort_order <- unique(data$Domain)
+      
+      # Set domain order based on estimate sum Pratt of measures
+      data <- data %>%
+        mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      ggplot(data,
+             aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
+        geom_alluvium(aes(fill = I(domain_color)), width = 1/12) +
+        geom_stratum(width = 1/20, aes(fill = domain_color), color = NA) +
+        geom_text(stat = "stratum", aes(label = after_stat(stratum)), hjust = 1, nudge_x = -.05) +
+        # scale_x_discrete(limits = c("Index", "Domain", "var_name"), expand = c(.05, .05, .05)) +
+        # scale_fill_brewer(type = "qual", palette = "Set1") +
+        ggtitle("Teen Birthrate") +
+        theme_void() +
+        theme(legend.position = "none")
+      
+    })
 })

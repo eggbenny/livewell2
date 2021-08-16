@@ -1,12 +1,12 @@
 # ui.R
 # Benedito Chou
-# July 13 2021
+# Aug 15 2021
 
 
 # --- ui --------------------------------------------------
 
 # --- Header
-header <- dashboardHeader(title = "LiveWell Prototype Demo")
+header <- dashboardHeader(title = "About Us Platform")
 
 sidebar <- dashboardSidebar(
     
@@ -43,6 +43,7 @@ sidebar <- dashboardSidebar(
 # --- Body
 body <- dashboardBody(
     
+  includeCSS("www/custom.css"),
    useShinyjs(),  # Set up shinyjs
   
   tabItems(
@@ -67,8 +68,8 @@ body <- dashboardBody(
                     infoBoxOutput("population", width = 12),
                     infoBoxOutput("pop_impact", width = 12),
                     conditionalPanel(
-                        condition = "input.extra == true",
-                         infoBoxOutput("play_extra_impact_card", width = 12)
+                        condition = "input.extra == true"
+                         # infoBoxOutput("play_extra_impact_card", width = 12)
                     ),
                     # infoBoxOutput("iv_echo", width = 12),
                     # infoBoxOutput("iv_rank", width = 12)  
@@ -118,10 +119,11 @@ body <- dashboardBody(
      tabPanel("Key Criteria",
       fluidRow(
         infoBoxOutput("play_impact_card_1", width = 12),
+        infoBoxOutput("play_impact_card_4", width = 12),
         infoBoxOutput("play_impact_card_2", width = 12),
         infoBoxOutput("play_impact_card_3", width = 12),
-        infoBoxOutput("play_impact_card_4", width = 12),
-        infoBoxOutput("play_impact_card_5", width = 12)
+        infoBoxOutput("play_impact_card_5", width = 12),
+        infoBoxOutput("play_extra_impact_card", width = 12)
       )  
      )
     ) #End of box
@@ -134,6 +136,9 @@ body <- dashboardBody(
                   actionButton("hide_play_matrix", "Show / Hide Matrix",
                                style = "color: darkgrey;
                            background-color: white"),
+                  actionButton("hide_play_sankey", "Show / Hide Sankey",
+                               style = "color: darkgrey;
+                           background-color: white"),
                   actionButton("hide_play_scatter", "Show / Hide Scatterplot",
                                style = "color: darkgrey;
                            background-color: white")
@@ -144,6 +149,30 @@ body <- dashboardBody(
                            choices = c("Index Measures Quintile Assignment", "Order of Measure Impact on Index"),
                            selected = "Index Measures Quintile Assignment"),
             plotOutput("play_quintile_matrix")
+          ),
+          column(id = "play_sankey_box", width = 12,
+           tabsetPanel(
+              tabPanel("Play Index",
+                   box(width = 12,
+                       plotOutput("play_sankey", height = "800px")
+                   )
+              ),
+              tabPanel("Fair or Poor Health",
+                       box(width = 12,
+                           plotOutput("fp_health_sankey", height = "800px")
+                       )
+              ),
+              tabPanel("Grad",
+                       box(width = 12,
+                           plotOutput("grad_sankey", height = "800px")
+                       )
+              ),
+              tabPanel("Diabetes",
+                       box(width = 12,
+                           plotOutput("diabetes_sankey", height = "800px")
+                       )
+              )
+           )
           ),
           column(id = "play_scatter_box", width = 12,
             plotOutput("play_grid_plot")
@@ -259,8 +288,8 @@ body <- dashboardBody(
                     infoBoxOutput("rest_population", width = 12),
                     infoBoxOutput("rest_pop_impact", width = 12),
                     conditionalPanel(
-                        condition = "input.extra == true",
-                         infoBoxOutput("rest_extra_impact_card", width = 12)
+                        condition = "input.extra == true"
+                         # infoBoxOutput("rest_extra_impact_card", width = 12)
                     )
                     # infoBoxOutput("iv_echo", width = 12),
                     # infoBoxOutput("iv_rank", width = 12)  
@@ -288,7 +317,12 @@ body <- dashboardBody(
                  id = "rest_tabset2", 
                  tabPanel("Key Criteria",
                           fluidRow(
-                            infoBoxOutput("rest_impact_card_1", width = 12)
+                            infoBoxOutput("rest_impact_card_1", width = 12),
+                            infoBoxOutput("rest_impact_card_4", width = 12),
+                            infoBoxOutput("rest_impact_card_2", width = 12),
+                            infoBoxOutput("rest_impact_card_3", width = 12),
+                            infoBoxOutput("rest_impact_card_5", width = 12),
+                            infoBoxOutput("rest_extra_impact_card", width = 12)
                           )  
                  )
           ) #End of box
@@ -301,6 +335,9 @@ body <- dashboardBody(
            actionButton("hide_rest_matrix", "Show / Hide Matrix",
                         style = "color: darkgrey;
                            background-color: white"),
+           actionButton("hide_rest_sankey", "Show / Hide Sankey",
+                        style = "color: darkgrey;
+                           background-color: white"),
            actionButton("hide_rest_scatter", "Show / Hide Scatterplot",
                         style = "color: darkgrey;
                            background-color: white")
@@ -311,6 +348,30 @@ body <- dashboardBody(
                                   choices = c("Index Measures Quintile Assignment", "Order of Measure Impact on Index"),
                                   selected = "Index Measures Quintile Assignment"),
                    plotOutput("rest_quintile_matrix")
+               ),
+               column(id = "rest_sankey_box", width = 12,
+                      tabsetPanel(
+                        tabPanel("Rest Index",
+                                 box(width = 12,
+                                     plotOutput("rest_sankey", height = "800px")
+                                 )
+                        ),
+                        tabPanel("Avg Mentally Unhealthy Days",
+                                 box(width = 12,
+                                     plotOutput("avg_m_days_sankey", height = "800px")
+                                 )
+                        ),
+                        tabPanel("Physical Inactive",
+                                 box(width = 12,
+                                     plotOutput("phy_inactive_sankey", height = "800px")
+                                 )
+                        ),
+                        tabPanel("Obesity",
+                                 box(width = 12,
+                                     plotOutput("obesity_sankey", height = "800px")
+                                 )
+                        )
+                      )
                ),
                column(id = "rest_scatter_box", width = 12,
                plotOutput("rest_grid_plot")
@@ -419,9 +480,32 @@ body <- dashboardBody(
              #  )
            ),
            
+           conditionalPanel(
+             condition = "input.extra == true",
+             tabBox(width = 3,
+                    title = "Impact of Work on",
+                    # The id lets us use input$tabset1 on the server to find the current tab
+                    id = "work_tabset2", 
+                    tabPanel("Key Criteria",
+                             fluidRow(
+                               infoBoxOutput("work_impact_card_1", width = 12),
+                               infoBoxOutput("work_impact_card_4", width = 12),
+                               infoBoxOutput("work_impact_card_2", width = 12),
+                               infoBoxOutput("work_impact_card_3", width = 12),
+                               infoBoxOutput("work_impact_card_5", width = 12)
+                             )  
+                    )
+             ) #End of box
+           ),
+           
+           conditionalPanel(
+             condition = "input.extra == false", 
            column(width = 6,   
                   column(12,
                          actionButton("hide_work_matrix", "Show / Hide Matrix",
+                                      style = "color: darkgrey;
+                           background-color: white"),
+                         actionButton("hide_work_sankey", "Show / Hide Sankey",
                                       style = "color: darkgrey;
                            background-color: white"),
                          actionButton("hide_work_scatter", "Show / Hide Scatterplot",
@@ -435,10 +519,35 @@ body <- dashboardBody(
                                          selected = "Index Measures Quintile Assignment"),
                           plotOutput("work_quintile_matrix")
                       ),
+                      column(id = "work_sankey_box", width = 12,
+                             tabsetPanel(
+                               tabPanel("Work Index",
+                                        box(width = 12,
+                                            plotOutput("work_sankey", height = "800px")
+                                        )
+                               ),
+                               tabPanel("Teen Birthrate",
+                                        box(width = 12,
+                                            plotOutput("teen_brate_sankey", height = "800px")
+                                        )
+                               ),
+                               tabPanel("Grad",
+                                        box(width = 12,
+                                            plotOutput("grad2_sankey", height = "800px")
+                                        )
+                               ),
+                               tabPanel("Avg Mentally Unhealthy Days",
+                                        box(width = 12,
+                                            plotOutput("avg_m_days2_sankey", height = "800px")
+                                        )
+                               )
+                             )
+                      ),
                       column(id = "work_scatter_box", width = 12,
                         plotOutput("work_grid_plot")
                       )
                   ) # End of box
+           )
            ),
            
            column(width = 3,

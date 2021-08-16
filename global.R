@@ -1,6 +1,6 @@
 # global.R
 # Benedito Chou
-# July 8 2021
+# Aug 15 2021
 
 
 # --- Load packages ---------------------------------------
@@ -31,6 +31,7 @@ library(QuantPsyc)
 library(EnvStats) # For Outlier detection
 library(bestglm)
 library(urbnmapr)
+library(ggalluvial)
 
 
 # --- Import Processed data ----------------------------------
@@ -44,6 +45,10 @@ library(urbnmapr)
 # Load Main Data used in Regression Modeling
 load("www/main_ana_data_df.RData")
 
+# Temp fix name
+names(ana_data_full)[80] <- "per_of_housing_with_no_vehicle_available"
+names(ana_data_full_wgeo)[83] <- "per_of_housing_with_no_vehicle_available"
+
 # Load Extra Data
 load("www/temp_extra_data_labour.RData")
 load("www/temp_extra_data_medicare.RData")
@@ -56,6 +61,11 @@ load("www/income_chg_at_26.RData")
 
 # load Domain Map
 load("www/domain_map.RData")
+
+# Temp fix name
+domain_map <- domain_map %>%
+  mutate(var_name = ifelse(var_name == "per_of_housing_with_vehicles_available", 
+                           "per_of_housing_with_no_vehicle_available", var_name))
 
 # load Region Map
 load("www/region_lkup.RData")
@@ -78,7 +88,20 @@ load("www/m_step_df_obesity.RData")
 
 # Work Index & 2nd Layers
 load("www/m_step_df_work.RData")
+
+# Temp name fix
+m_step_df_work <- m_step_df_work  %>%
+  mutate(var_name = ifelse(var_name == "per_of_housing_with_vehicles_available", 
+                           "per_of_housing_with_no_vehicle_available", var_name))
+
 load("www/m_step_df_teen_brate.RData")
+
+# Temp name fix
+m_step_df_teen_brate <- m_step_df_teen_brate  %>%
+  mutate(var_name = ifelse(var_name == "per_of_housing_with_vehicles_available", 
+                           "per_of_housing_with_no_vehicle_available", var_name))
+
+
 # per_w_grad_or_prof_degree
 # load("www/m_step_df_grad.RData")
 load("www/m_step_df_avg_mdays.RData")
@@ -87,7 +110,9 @@ load("www/m_step_df_avg_mdays.RData")
 
 # --- Some Format Setting ------------------------------------
 
-quintile_colour_pal <- c("#e41a1c", "#ffff99", "#ff7f00", "#377eb8", "#4daf4a")
+# Old colour
+# quintile_colour_pal <- c("#d53e4f", "#ffff99", "#ff7f00", "#377eb8", "#4daf4a")
+quintile_colour_pal <- c("#f26957", "#9ea1cf", "#f7d9f0", "#e5eb45", "#33a654")
 
 # --- Calculate Index Score ----------------------------------
 
@@ -230,9 +255,9 @@ measure_lst_play <- filter(m_step_df_play, var_name != "(Intercept)") %>%
   unlist() %>%
   as.character()
 
-measure_all_lst_play <- measure_lst_play[c(-14, -16, -18, -20, -22)]
+measure_all_lst_play <- measure_lst_play[c(-14, -16, -18, -20, -22, -24, -25, -26)]
 measure_top3_lst_play <- measure_lst_play[c(1:3)]
-measure_lst_play <- measure_lst_play[c(-1:-3)]
+measure_lst_play <- measure_lst_play[c(-1, -2, -3, -14, -16, -18, -20, -22, -24, -25, -26)]
 
 # Measure lst for Rest Index
 measure_lst_rest <- filter(m_step_df_rest, var_name != "(Intercept)") %>%
@@ -241,9 +266,9 @@ measure_lst_rest <- filter(m_step_df_rest, var_name != "(Intercept)") %>%
   unlist() %>%
   as.character()
 
-measure_all_lst_rest <- measure_lst_rest[c(-5, -13, -15, -16, -18, -19, -21, -22, -23, -26)]
+measure_all_lst_rest <- measure_lst_rest[c(-1, -2, -5, -13, -15, -16, -18, -19, -21, -22, -23, -25, -26, -27, -28, -29)]
 measure_top3_lst_rest <- measure_lst_rest[c(3, 4, 6)]
-measure_lst_rest <- measure_lst_rest[c(-3, -4, -6)]
+measure_lst_rest <- measure_lst_rest[c(-1, -2, -3, -4, -5, -6, -13, -15, -16, -18, -19, -21, -22, -23, -25, -26, -27, -28, -29)]
 
 # Measure lst for Work Index
 measure_lst_work <- filter(m_step_df_work, var_name != "(Intercept)") %>%
@@ -252,9 +277,9 @@ measure_lst_work <- filter(m_step_df_work, var_name != "(Intercept)") %>%
   unlist() %>%
   as.character()
 
-measure_all_lst_work <- measure_lst_work[c(-12, -15, -16, -19, -20, -24, -25, -29)]
+measure_all_lst_work <- measure_lst_work[c(-1, -12, -15, -16, -17, -18, -19, -20, -22, -24, -25, -27, -28, -29, -31, -32, -33, -34, -35, -36)]
 measure_top3_lst_work <- measure_lst_work[c(2:4)]
-measure_lst_work <- measure_lst_work[-c(2:4, 16)]
+measure_lst_work <- measure_lst_work[c(-1, -2, -3, -4, -12, -15, -16, -17, -18, -19, -20, -22, -24, -25, -27, -28, -29, -31, -32, -33, -34, -35, -36)]
 
 # Measure lst for Fair and Poor Health as Outcome
 measure_lst_fp_health <- filter(m_step_df_fp_health, var_name != "(Intercept)") %>%
@@ -272,9 +297,9 @@ domain_lst_fp_health <- filter(m_step_df_fp_health, var_name != "(Intercept)") %
   unlist() %>%
   as.character()
 
-measure_all_lst_fp_health <- measure_lst_fp_health 
+measure_all_lst_fp_health <- measure_lst_fp_health[c(-18, -25, -26, -27, -28, -34, -36)]
 measure_top3_lst_fp_health <- measure_lst_fp_health[c(1:3)]
-measure_lst_fp_health <- measure_lst_fp_health[c(-1:-3)]
+measure_lst_fp_health <- measure_lst_fp_health[c(-1, -2, -3, -18, -25, -26, -27, -28, -34, -36)]
 
 # Measure lst for Grad as Outcome
 measure_lst_grad <- filter(m_step_df_grad, var_name != "(Intercept)") %>%
@@ -292,9 +317,9 @@ domain_lst_grad <- filter(m_step_df_grad, var_name != "(Intercept)") %>%
   unlist() %>%
   as.character()
 
-measure_all_lst_grad <- measure_lst_grad
+measure_all_lst_grad <- measure_lst_grad[c(-2, -23, -26, -27, -28, -30, -31)]
 measure_top3_lst_grad <- measure_lst_grad[c(1,3,4)]
-measure_lst_grad <- measure_lst_grad[c(-1,-3,-4)]
+measure_lst_grad <- measure_lst_grad[c(-1, -2, -3, -4, -23, -26, -27, -28, -30, -31)]
 
 # Measure lst for Diabetes as Outcome
 measure_lst_diabetes <- filter(m_step_df_diabetes, var_name != "(Intercept)") %>%
@@ -312,9 +337,9 @@ domain_lst_diabetes <- filter(m_step_df_diabetes, var_name != "(Intercept)") %>%
   unlist() %>%
   as.character()
 
-measure_all_lst_diabetes <- measure_lst_diabetes
+measure_all_lst_diabetes <- measure_lst_diabetes[c(-1, -8, -16, -17, -19)]
 measure_top3_lst_diabetes <- measure_lst_diabetes[c(2:4)]
-measure_lst_diabetes <- measure_lst_diabetes[-c(2:4)]
+measure_lst_diabetes <- measure_lst_diabetes[c(-1, -2, -3, -4, -8, -16, -17, -19)]
 
 # Measure lst for Routine Doc Checkup as Outcome
 # measure_lst_doc_checkup <- filter(m_step_df_doc_checkup, var_name != "(Intercept)") %>%
@@ -373,9 +398,9 @@ domain_lst_avg_m_days <- filter(m_step_df_avg_m_days, var_name != "(Intercept)")
   unlist() %>%
   as.character()
 
-measure_all_lst_avg_m_days <- measure_lst_avg_m_days
+measure_all_lst_avg_m_days <- measure_lst_avg_m_days[c(-16, -17, -18, -19, -20, -21, -22)]
 measure_top3_lst_avg_m_days <- measure_lst_avg_m_days[c(1:3)]
-measure_lst_avg_m_days <- measure_lst_avg_m_days[c(-1:-3)]
+measure_lst_avg_m_days <- measure_lst_avg_m_days[c(-1, -2, -3, -16, -17, -18, -19, -20, -21, -22)]
 
 
 measure_lst_obesity <- filter(m_step_df_obesity, var_name != "(Intercept)") %>%
@@ -393,9 +418,9 @@ domain_lst_obesity <- filter(m_step_df_obesity, var_name != "(Intercept)") %>%
   unlist() %>%
   as.character()
 
-measure_all_lst_obesity <- measure_lst_obesity
+measure_all_lst_obesity <- measure_lst_obesity[c(-23, -24, -25, -26)]
 measure_top3_lst_obesity <- measure_lst_obesity[c(1:3)]
-measure_lst_obesity <- measure_lst_obesity[-c(1:3)]
+measure_lst_obesity <- measure_lst_obesity[c(-1, -2, -3, -23, -24, -25, -26)]
 
 
 measure_lst_phy_inactive <- filter(m_step_df_phy_inactive, var_name != "(Intercept)") %>%
@@ -413,9 +438,9 @@ domain_lst_phy_inactive <- filter(m_step_df_phy_inactive, var_name != "(Intercep
   unlist() %>%
   as.character()
 
-measure_all_lst_phy_inactive <- measure_lst_phy_inactive
+measure_all_lst_phy_inactive <- measure_lst_phy_inactive[c(-14, -16, -18, -20, -22, -24, -25, -26)]
 measure_top3_lst_phy_inactive <- measure_lst_phy_inactive[c(1:3)]
-measure_lst_phy_inactive <- measure_lst_phy_inactive[-c(1:3)]
+measure_lst_phy_inactive <- measure_lst_phy_inactive[c(-1, -2, -3, -14, -16, -18, -20, -22, -24, -25, -26)]
 
 
 measure_lst_teen_brate <- filter(m_step_df_teen_brate, var_name != "(Intercept)") %>%
@@ -433,9 +458,9 @@ domain_lst_teen_brate <- filter(m_step_df_teen_brate, var_name != "(Intercept)")
   unlist() %>%
   as.character()
 
-measure_all_lst_teen_brate <- measure_lst_teen_brate
+measure_all_lst_teen_brate <- measure_lst_teen_brate[c(-2, -4, -13, -22, -26, -29, -33, -35)]
 measure_top3_lst_teen_brate <- measure_lst_teen_brate[c(1, 3, 5)]
-measure_lst_teen_brate <- measure_lst_teen_brate[-c(1, 3, 5)]
+measure_lst_teen_brate <- measure_lst_teen_brate[c(-1, -2, -3, -4, -5, -13, -22, -26, -29, -33, -35)]
 
 
 # Calculate Index with Fixed Slider values
@@ -648,8 +673,8 @@ cross_map_data <- left_join(dplyr::select(play_fixed_z_data_wgeo, fips, state, c
 
 quintile_colour_pal_df <- tibble(
     quintile = c(1, 2, 3, 4, 5),
-    qcolor = c("#e41a1c", "#ffff99", "#ff7f00", "#377eb8", "#4daf4a"))
-quintile_colour_pal_lst <- c("#e41a1c", "#ffff99", "#ff7f00", "#377eb8", "#4daf4a")
+    qcolor = c("#f26957", "#9ea1cf", "#f7d9f0", "#e5eb45", "#33a654"))
+quintile_colour_pal_lst <- c("#f26957", "#9ea1cf", "#f7d9f0", "#e5eb45", "#33a654")
 
 # new_cross_map <- read_excel(file.choose())
 # new_cross_map <- read_excel("../Beta/data/About Us cross_indices_map v2.xlsx")
@@ -730,3 +755,20 @@ new_cross_map <- new_cross_map %>% left_join(quintile_colour_pal_df,
 #         legend.key.width = unit(3, "cm"))
 
 # write_csv(cross_map_data, "../Beta/data/cross_indices_map.csv", na = "")
+
+
+# Sankey domain colour central
+# Estimate gglot colour
+# See https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+domain_color_df <- tibble(
+  Domain = c("Demographics", "Disease & Disability", "Health and Social Care", "Home",                
+             "Length of Life", "Personal Behaviors", "Physical Environment", "Quality of Life",      
+             "Socio-Economic", "Transportation"),
+  # domain_color = c("E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999",
+  # "black"),
+  domain_color = gg_color_hue(10))
