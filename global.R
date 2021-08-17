@@ -1,6 +1,6 @@
 # global.R
 # Benedito Chou
-# Aug 15 2021
+# Aug 16 2021
 
 
 # --- Load packages ---------------------------------------
@@ -246,6 +246,10 @@ work_ana_data_wgeo_long <- ana_data_wgeo_long %>%
 domain_lst <- filter(domain_map, !is.na(Domain)) %>%
   filter(Domain != "Demographics") %>%
   distinct(Domain) %>% unlist() %>% as.character()
+
+# Demographic to exclude
+demographic_to_exclude <- filter(domain_map, !is.na(Domain)) %>%
+  filter(Domain == "Demographics") %>% pull(var_name)
 
 
 # Measure lst for Play Index
@@ -771,4 +775,6 @@ domain_color_df <- tibble(
              "Socio-Economic", "Transportation"),
   # domain_color = c("E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999",
   # "black"),
-  domain_color = gg_color_hue(10))
+  domain_color = c( "#F8766D", "#D89000", "#A3A500", "#39B600", "#00BF7D", "#00BFC4", "#00B0F6", "#9590FF", "#E76BF3", "lightgrey"))
+
+#FF63B6

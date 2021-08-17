@@ -1,6 +1,6 @@
 # server.R
 # Benedito Chou
-# Aug 15 2021
+# Aug 16 2021
 
 # --- Server ----------------------------------------------
 
@@ -5581,7 +5581,8 @@ shinyServer(function(input, output, session) {
       data <- mutate(data, 
                          Index = "Play",
                          var = factor(var_name, levels = measure_all_lst_play),
-                         Freq = pratt*15 + 1) %>%
+                         pratt = pratt*15 + 1,
+                         Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5594,9 +5595,14 @@ shinyServer(function(input, output, session) {
       
       domain_sort_order <- unique(data$Domain)
       
+      datatocheck.check <<- data
+      
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5626,7 +5632,8 @@ shinyServer(function(input, output, session) {
       data <- mutate(data, 
                      Index = "Rest",
                      var = factor(var_name, levels = measure_all_lst_rest),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5642,6 +5649,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5671,7 +5681,8 @@ shinyServer(function(input, output, session) {
       data <- mutate(data, 
                      Index = "Work",
                      var = factor(var_name, levels = measure_all_lst_work),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5687,6 +5698,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5717,7 +5731,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_fp_health),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5733,6 +5748,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5761,7 +5779,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_grad),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5777,6 +5796,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5805,7 +5827,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_grad),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5821,6 +5844,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5849,7 +5875,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_diabetes),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5865,6 +5892,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5893,7 +5923,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_avg_m_days),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5909,6 +5940,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5937,7 +5971,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_avg_m_days),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5953,6 +5988,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -5981,7 +6019,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_obesity),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -5997,6 +6036,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -6025,7 +6067,8 @@ shinyServer(function(input, output, session) {
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_phy_inactive),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -6041,6 +6084,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
@@ -6065,11 +6111,12 @@ shinyServer(function(input, output, session) {
         left_join(domain_map, by = "var_name")
       
       data <- data %>%
-        left_join(domain_color_df, by = "Domain")      
+        left_join(domain_color_df, by = "Domain")     
       
       data <- mutate(data, 
                      var = factor(var_name, levels = measure_all_lst_teen_brate),
-                     Freq = pratt*15 + 1) %>%
+                     pratt = pratt*15 + 1,
+                     Freq = pratt) %>%
         ungroup() %>%
         arrange(pratt)
       
@@ -6085,6 +6132,9 @@ shinyServer(function(input, output, session) {
       # Set domain order based on estimate sum Pratt of measures
       data <- data %>%
         mutate(domain_order = factor(Domain, levels = domain_sort_order))
+      
+      # Exclude demographic
+      data <- filter(data, !var_name %in% demographic_to_exclude)
       
       ggplot(data,
              aes(y = Freq, axis1 = NA, axis2 = domain_order, axis3 = var)) +
