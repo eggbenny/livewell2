@@ -1,6 +1,6 @@
 # global.R
 # Benedito Chou
-# Aug 16 2021
+# Aug 27 2021
 
 
 # --- Load packages ---------------------------------------
@@ -48,6 +48,8 @@ load("www/main_ana_data_df.RData")
 # Temp fix name
 names(ana_data_full)[80] <- "per_of_housing_with_no_vehicle_available"
 names(ana_data_full_wgeo)[83] <- "per_of_housing_with_no_vehicle_available"
+names(ana_data_full)[89] <- "pop_w_a_cog_or_phy_impairment"
+names(ana_data_full)[92] <- "pop_w_a_cog_or_phy_impairment"
 
 # Load Extra Data
 load("www/temp_extra_data_labour.RData")
@@ -65,7 +67,8 @@ load("www/domain_map.RData")
 # Temp fix name
 domain_map <- domain_map %>%
   mutate(var_name = ifelse(var_name == "per_of_housing_with_vehicles_available", 
-                           "per_of_housing_with_no_vehicle_available", var_name))
+                           "per_of_housing_with_no_vehicle_available", var_name),
+         var_name = ifelse(var_name == "per_w_a_disability", "pop_w_a_cog_or_phy_impairment", var_name))
 
 # load Region Map
 load("www/region_lkup.RData")
@@ -99,7 +102,9 @@ load("www/m_step_df_teen_brate.RData")
 # Temp name fix
 m_step_df_teen_brate <- m_step_df_teen_brate  %>%
   mutate(var_name = ifelse(var_name == "per_of_housing_with_vehicles_available", 
-                           "per_of_housing_with_no_vehicle_available", var_name))
+                           "per_of_housing_with_no_vehicle_available", var_name),
+         var_name = ifelse(var_name == "per_w_a_disability", "pop_w_a_cog_or_phy_impairment", var_name))
+
 
 
 # per_w_grad_or_prof_degree

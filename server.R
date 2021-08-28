@@ -1,6 +1,6 @@
 # server.R
 # Benedito Chou
-# Aug 16 2021
+# Aug 27 2021
 
 # --- Server ----------------------------------------------
 
@@ -2358,7 +2358,7 @@ shinyServer(function(input, output, session) {
         
         # Add original to calculate change
         value_fixed <- rest_fixed_z_data_wgeo %>%
-          filter(state == input$state, county == input$county) %>%
+          filter(state == input$rest_state, county == input$rest_county) %>%
           pull(score)
         
         change <- round(value - value_fixed, 1)
@@ -2398,7 +2398,7 @@ shinyServer(function(input, output, session) {
         
         # Add original to calculate change
         value_fixed <- work_fixed_z_data_wgeo %>%
-          filter(state == input$state, county == input$county) %>%
+          filter(state == input$work_state, county == input$work_county) %>%
           pull(score)
         
         change <- round(value - value_fixed, 1)
@@ -4792,7 +4792,7 @@ shinyServer(function(input, output, session) {
                          color = factor(focus)), size = 5, shape = 21) +
           geom_label_repel(aes(label = label),
                            color = "black") +
-          labs(y = "Work Index (0 to 100)", x = "% of population with a cognitive or physical impairment") +
+          labs(y = "Work Index (0 to 100)", x = "% of working population with a cognitive or physical impairment") +
           theme_minimal() +
           scale_fill_manual(values = quintile_colour_pal) +
           scale_colour_manual(values = c("#ffffff00", "black")) +
@@ -4809,7 +4809,7 @@ shinyServer(function(input, output, session) {
                            color = "darkgrey", size = 4.5, box.padding = .12, label.padding = .12, label.size = 0.2) +
           geom_label_repel(data = region_data, aes(label = label),
                            color = "black", size = 7) +
-          labs(y = "Work Index (0 to 100)", x = "% of population with a cognitive or physical impairment") +
+          labs(y = "Work Index (0 to 100)", x = "% of working population with a cognitive or physical impairment") +
           theme_minimal() +
           scale_fill_manual(values = quintile_colour_pal) +
           scale_colour_manual(values = c("#ffffff00", "black")) +
