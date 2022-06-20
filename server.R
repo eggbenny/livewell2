@@ -1,8 +1,8 @@
 # server.R
 # Benedito Chou
-# Aug 27 2021
+# June 17 2022
 
-# --- Server ----------------------------------------------
+# --- Server -------------------------------------------
 
 # --- Server
 shinyServer(function(input, output, session) {
@@ -675,6 +675,10 @@ shinyServer(function(input, output, session) {
         mutate(
           score = play_w_per_fair_or_poor_health,
           quintile = ntile(score, 5)) # Use fair and poor health as a proxy
+      
+      
+      play_z_data_wgeo <<- z_data_wgeo
+      
     
       # Add physical_inactivity_back
       phy_inactive_wgeo <- dplyr::select(ana_data_full_wgeo, fips, state, county, population, per_physically_inactive)
@@ -787,6 +791,10 @@ shinyServer(function(input, output, session) {
           score = play_w_avg_no_of_mentally_unhealthy_days,
           quintile = ntile(score, 5)) # Use fair and poor health as a proxy) # Use avg_no_of_mentally_unhealthy_days as a proxy
       
+      
+      rest_z_data_wgeo <<- z_data_wgeo
+      
+      
       # Add per_insufficient_sleep back
       per_insufficient_sleep_wgeo <- dplyr::select(ana_data_full_wgeo, fips, state, county, per_insufficient_sleep)
       
@@ -897,6 +905,8 @@ shinyServer(function(input, output, session) {
         mutate(
           score = play_w_teen_birth_rate,
           quintile = ntile(score, 5)) # Use fair and poor health as a proxy) # Use teen birth rate as a proxy
+      
+      work_z_data_wgeo <<- z_data_wgeo
       
       # Add per_w_a_disability back
       per_w_a_disability_wgeo <- dplyr::select(ana_data_full_wgeo, fips, state, county, population, per_w_a_disability)
@@ -1568,7 +1578,6 @@ shinyServer(function(input, output, session) {
         value2 <- abs(sum(value2_0, value2_top5, na.rm = T))
         
         # value2 <- sum(value2_0, value2_top5, value2_1, value2_2, value2_3, value2_4, value2_5, na.rm = T)
-        
 
 
         value2_per = round((value2 / value) * 100, 1)
@@ -1576,6 +1585,7 @@ shinyServer(function(input, output, session) {
         # print(paste0("pop impact:", value2, "      ", value, "      ", value2_per, "%"))
         # 
         value3 <- paste0(value2, " (", value2_per, "%)")
+      
         
         infoBox(
           "Est' Population Impacted", value3, 
@@ -2110,6 +2120,7 @@ shinyServer(function(input, output, session) {
       }
       
       value <- round(data$per_w_a_disability, 1)
+
       
       infoBox(
         HTML(paste("% of Population", br(), "with a cognitive or", br(), "physical impairment")),
@@ -2817,6 +2828,8 @@ shinyServer(function(input, output, session) {
         select_data <- play_z_geo_df()
         data <- left_join(select_data, ana_data_criterion, by = c("fips", "state", "county"))
         
+        data_play <<- data
+        
         data <- data %>%
           left_join(data_labour_1, by = c("fips" = "FIPS"))
   
@@ -2868,6 +2881,7 @@ shinyServer(function(input, output, session) {
         # phy_inactive_change.check <<- phy_inactive_change
         
         final_value <- round(data$years_of_potential_life_lost_rate - (b * phy_inactive_change), 1)
+      
         
         # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
         
@@ -2896,6 +2910,7 @@ shinyServer(function(input, output, session) {
         
         final_value <- round(data$avg_no_of_physically_unhealthy_days - (b * phy_inactive_change), 2)
         
+        
         # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
         
         infoBox(
@@ -2922,6 +2937,8 @@ shinyServer(function(input, output, session) {
         data <- extra_data_for_card()
         
         final_value <- round(data$avg_no_of_mentally_unhealthy_days - (b * phy_inactive_change), 2)
+        
+
         
         # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
         
@@ -2950,6 +2967,8 @@ shinyServer(function(input, output, session) {
         
         final_value <- round(data$age_adjusted_death_rate - (b * phy_inactive_change), 1)
 
+      
+        
         # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
 
         infoBox(
@@ -2980,6 +2999,7 @@ shinyServer(function(input, output, session) {
       
       final_value <- round(0- (b * phy_inactive_change), 1)
       
+      
       # final_value <- round(data$age_adjusted_death_rate - (b * phy_inactive_change), 1)
       
       # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
@@ -3000,6 +3020,34 @@ shinyServer(function(input, output, session) {
     # Average Number of Mentally Unhealthy Days, 
     # Premature age-adjusted mortality
     
+    # Extra data grouping
+    rest_extra_data_for_card <- reactive({
+      
+      select_data <- rest_z_geo_df()
+      data <- left_join(select_data, rest_ana_data_criterion, by = c("fips", "state", "county"))
+      
+      data <- data %>%
+        left_join(data_labour_1, by = c("fips" = "FIPS"))
+      
+      if (input$rest_region != "--") {
+        
+        data <- left_join(data, region_lkup, by = c("fips" = "FIPS"))
+        
+        data <- data %>% 
+          filter(Region == input$rest_region) %>%
+          ungroup() %>%
+          group_by(Region) %>% 
+          summarise(across(where(is.numeric), mean, na.rm = T))
+        
+      } else {
+        
+        data <- filter(data, state == input$rest_state, county == input$rest_county)
+        
+      } 
+      
+      return(data)
+    })
+    
     output$rest_impact_card_1 <- renderInfoBox({
       
       # Insufficient Sleep change
@@ -3015,13 +3063,20 @@ shinyServer(function(input, output, session) {
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- rest_extra_data_for_card()
+  
+      
+      print(insufficient_sleep_change)
+      b_rest <<- b
+      data_rest_extra <<- data
       
       # b.check <<- b
       # select_data.check <<- data
       # phy_inactive_change.check <<- phy_inactive_change
       
       final_value <- round(data$years_of_potential_life_lost_rate - (b * insufficient_sleep_change), 1)
+    
+      final_value_rest <<- final_value
       
       # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
       
@@ -3046,7 +3101,7 @@ shinyServer(function(input, output, session) {
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- rest_extra_data_for_card()
       
       final_value <- round(data$avg_no_of_physically_unhealthy_days - (b * insufficient_sleep_change), 2)
       
@@ -3068,12 +3123,16 @@ shinyServer(function(input, output, session) {
       # Get impact model b
       data <- rest_z_geo_w_criterion_df()
       
+      # add avg_no_of_mentally_unhealthy_days
+      # data <- left_join(data, dplyr::select(rest_ana_data_criterion, avg_no_of_mentally_unhealthy_days, fips),
+      #                   by = "fips")
+      
       model <- lm(avg_no_of_mentally_unhealthy_days ~ score, data = data) %>%
         tidy()
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- rest_extra_data_for_card()
       
       final_value <- round(data$avg_no_of_mentally_unhealthy_days - (b * insufficient_sleep_change), 2)
       
@@ -3096,7 +3155,7 @@ shinyServer(function(input, output, session) {
       data <- rest_z_geo_w_criterion_df()
       
       # add age_adjusted_death_rate
-      data <- left_join(data, dplyr::select(ana_data_criterion, age_adjusted_death_rate, fips),
+      data <- left_join(data, dplyr::select(rest_ana_data_criterion, age_adjusted_death_rate, fips),
                         by = "fips")
       
       model <- lm(age_adjusted_death_rate ~ score, data = data) %>%
@@ -3104,7 +3163,7 @@ shinyServer(function(input, output, session) {
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- rest_extra_data_for_card()
       
       final_value <- round(data$age_adjusted_death_rate - (b * insufficient_sleep_change), 1)
       
@@ -3135,7 +3194,7 @@ shinyServer(function(input, output, session) {
       # Hard code for now
       b <- -64.94864 
       
-      data <- extra_data_for_card()
+      data <- rest_extra_data_for_card()
       
       final_value <- round(0 - (b * insufficient_sleep_change), 1)
       
@@ -3159,6 +3218,36 @@ shinyServer(function(input, output, session) {
     # Average Number of Mentally Unhealthy Days, 
     # Premature age-adjusted mortality
     
+    # Extra data grouping
+    work_extra_data_for_card <- reactive({
+      
+      select_data <- work_z_geo_df()
+      data <- left_join(select_data, work_ana_data_criterion, by = c("fips", "state", "county"))
+      
+      data <- data %>%
+        left_join(data_labour_1, by = c("fips" = "FIPS"))
+      
+      # data_work <<- data
+      
+      if (input$work_region != "--") {
+        
+        data <- left_join(data, region_lkup, by = c("fips" = "FIPS"))
+        
+        data <- data %>% 
+          filter(Region == input$work_region) %>%
+          ungroup() %>%
+          group_by(Region) %>% 
+          summarise(across(where(is.numeric), mean, na.rm = T))
+        
+      } else {
+        
+        data <- filter(data, state == input$work_state, county == input$work_county)
+        
+      } 
+      
+      return(data)
+    })
+    
     output$work_impact_card_1 <- renderInfoBox({
       
       # Per with Disability change
@@ -3174,13 +3263,19 @@ shinyServer(function(input, output, session) {
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- work_extra_data_for_card()
+      
+      print(per_w_disability_change)
+      b_work <<- b
+      data_work_extra <<- data
       
       # b.check <<- b
       # select_data.check <<- data
       # phy_inactive_change.check <<- phy_inactive_change
       
       final_value <- round(data$years_of_potential_life_lost_rate - (b * per_w_disability_change), 1)
+      
+      final_value_work <<- final_value
       
       # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
       
@@ -3205,9 +3300,10 @@ shinyServer(function(input, output, session) {
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- work_extra_data_for_card()
       
       final_value <- round(data$avg_no_of_physically_unhealthy_days - (b * per_w_disability_change), 2)
+      
       
       # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
       
@@ -3232,9 +3328,10 @@ shinyServer(function(input, output, session) {
       
       b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      data <- work_extra_data_for_card()
       
       final_value <- round(data$avg_no_of_mentally_unhealthy_days - (b * per_w_disability_change), 2)
+      
       
       # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
       
@@ -3254,18 +3351,21 @@ shinyServer(function(input, output, session) {
       # Get impact model b
       data <- work_z_geo_w_criterion_df()
       
-      # # add age_adjusted_death_rate
-      data <- left_join(data, dplyr::select(ana_data_criterion, age_adjusted_death_rate, fips),
+      # add age_adjusted_death_rate
+      data <- left_join(data, dplyr::select(work_ana_data_criterion, age_adjusted_death_rate, fips),
                         by = "fips")
       
       model <- lm(age_adjusted_death_rate ~ score, data = data) %>%
         tidy()
       
-      b <- model$estimate[2]
       
-      data <- extra_data_for_card()
+      b <- model$estimate[2]
+
+      
+      data <- work_extra_data_for_card()
       
       final_value <- round(data$age_adjusted_death_rate - (b * per_w_disability_change), 1)
+  
       
       # print(paste0(final_value, ": ", b, ": ", phy_inactive_change))
       
@@ -3293,7 +3393,7 @@ shinyServer(function(input, output, session) {
       # Hard code for now
       b <- -46.56329  
       
-      data <- extra_data_for_card()
+      data <- work_extra_data_for_card()
       
       final_value <- round(0- (b * per_w_disability_change), 1)
       

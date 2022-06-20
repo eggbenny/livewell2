@@ -1,6 +1,6 @@
 # global.R
 # Benedito Chou
-# Aug 27 2021
+# June 17 2022
 
 
 # --- Load packages ---------------------------------------
@@ -171,6 +171,11 @@ criterion <- full_join(criterion_ana, criterion_extra_1, by = "fips") %>%
   full_join(criterion_extra_2, by = "fips") %>%
   full_join(criterion_extra_3, by = "fips")
 
+# Use for Extra Card
+# Years of Potential Life Lost Rate, 
+# Average Number of Physically Unhealthy Days, 
+# Average Number of Mentally Unhealthy Days, 
+# Premature age-adjusted mortality
 
 ana_data_criterion <- ana_data_full_wgeo %>%
   dplyr::select(fips, state, county, 
@@ -195,10 +200,10 @@ ana_data_criterion <- ana_data_full_wgeo %>%
 
 rest_ana_data_criterion <- ana_data_full_wgeo %>%
   dplyr::select(fips, state, county, 
-                years_of_potential_life_lost_rate,
+                # years_of_potential_life_lost_rate,
                 # average_number_of_physically_unhealthy_days,
                 avg_no_of_physically_unhealthy_days,
-                avg_no_of_mentally_unhealthy_days,
+                # avg_no_of_mentally_unhealthy_days,
                 preventable_hospitalization_rate,
                 per_adults_with_diabetes,
                 primary_care_physicians_ratio,
@@ -219,14 +224,14 @@ work_ana_data_criterion <- ana_data_full_wgeo %>%
                 # average_number_of_physically_unhealthy_days,
                 avg_no_of_physically_unhealthy_days,
                 # avg_no_of_mentally_unhealthy_days,
-                # preventable_hospitalization_rate,
+                preventable_hospitalization_rate,
                 per_adults_with_diabetes,
                 primary_care_physicians_ratio,
-                # per_unemployed,
-                # per_single_parent_households,
-                age_adjusted_death_rate,
+                per_unemployed,
+                per_single_parent_households,
+                # age_adjusted_death_rate,
                 social_association_rate,
-                # severe_housing_cost_burden,
+                severe_housing_cost_burden,
                 violent_crime_rate,
                 x20th_perile_income,
                 age_adjusted_death_rate,
@@ -687,8 +692,9 @@ quintile_colour_pal_lst <- c("#f26957", "#9ea1cf", "#f7d9f0", "#e5eb45", "#33a65
 
 # new_cross_map <- read_excel(file.choose())
 # new_cross_map <- read_excel("../Beta/data/About Us cross_indices_map v2.xlsx")
-load("www/About Us cross_indices_map v2.Rdata")
-#
+load("www/about_us_cross_indices_map_v2.RData")
+
+
 new_cross_map <- new_cross_map %>%
   dplyr::mutate(
     length = nchar(fips),
